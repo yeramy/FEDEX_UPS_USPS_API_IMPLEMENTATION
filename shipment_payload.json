@@ -1,0 +1,61 @@
+{
+  "labelResponseOptions": "URL_ONLY",
+  "requestedShipment": {
+    "shipper": {
+      "contact": {
+        "personName": "SHIPPER NAME",
+        "phoneNumber": 8188549678,
+        "companyName": "Yeram Company"
+      },
+      "address": {
+        "streetLines": [
+          "2000 Freight LTL Testing"
+        ],
+        "city": "Harrison",
+        "stateOrProvinceCode": "AR",
+        "postalCode": 72601,
+        "countryCode": "US"
+      }
+    },
+    "recipients": [
+      {
+        "contact": {
+          "personName": "Yeram Hwang",
+          "phoneNumber": 8188549678,
+          "companyName": ""
+        },
+        "address": {
+          "streetLines": [
+            "746 S BURLINGTON AVE",
+            "APT123"
+          ],
+          "city": "Los Angeles",
+          "stateOrProvinceCode": "CA",
+          "postalCode": 90057,
+          "countryCode": "US"
+        }
+      }
+    ],
+    "serviceType": "STANDARD_OVERNIGHT",
+    "packagingType": "FEDEX_SMALL_BOX",
+    "pickupType": "USE_SCHEDULED_PICKUP",
+    "shippingChargesPayment": {
+      "paymentType": "SENDER"
+    },
+    "labelSpecification": {
+      "imageType": "PDF",
+      "labelStockType": "PAPER_85X11_TOP_HALF_LABEL"
+    },
+    "requestedPackageLineItems": [
+      {
+        "weight": {
+          "units" : "KG",
+          "value" : 0.5
+        }
+      }
+    ]
+  },
+  "accountNumber": {
+    "value": "740561073"
+  }
+}

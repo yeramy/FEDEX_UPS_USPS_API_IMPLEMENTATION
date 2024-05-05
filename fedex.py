@@ -1,17 +1,18 @@
-import csv
 import os
+from dotenv import load_dotenv
+
 import requests
 import json
 from datetime import datetime
-
-
-token = "l79a1e0c07acb84f40b77c72302f43ac1f"
-def getBearerAuthorization():
+def getBearerAuthorizationTracking():
     url = "https://apis-sandbox.fedex.com/oauth/token"
 
-    key = "4dba4d248d0b4b3d8be0e20c1a7d011a"
+    load_dotenv()
 
-    payload = 'grant_type=client_credentials&client_id=l79a1e0c07acb84f40b77c72302f43ac1f&client_secret=' + key
+    id = os.getenv('fedex_client_id_tracking')
+    key = os.getenv('fedex_client_secret_tracking')
+
+    payload = 'grant_type=client_credentials&client_id=' + id + '&client_secret=' + key
     headers = {
         'Content-Type': "application/x-www-form-urlencoded"
     }
@@ -19,11 +20,25 @@ def getBearerAuthorization():
     response = requests.request("POST", url, data=payload, headers=headers)
 
     return response.json()['access_token']
+def getBearerAuthorizationShipping():
+    url = "https://apis-sandbox.fedex.com/oauth/token"
 
+    load_dotenv()
+
+    id = os.getenv('fedex_client_id_shipping')
+    key = os.getenv('fedex_client_secret_shipping')
+
+    payload = 'grant_type=client_credentials&client_id=l7bfa46a244ae54a378d86092b207f92b7&client_secret=' + key
+    headers = {
+        'Content-Type': "application/x-www-form-urlencoded"
+    }
+
+    response = requests.request("POST", url, data=payload, headers=headers)
+    return response.json()['access_token']
 def trackPackage(tackingNum):
 
     #Get Token for Authorization of API calls
-    auth = getBearerAuthorization()
+    auth = getBearerAuthorizationTracking()
 
     #URL for API Calls
     url = "https://apis-sandbox.fedex.com/track/v1/trackingnumbers"
@@ -33,14 +48,16 @@ def trackPackage(tackingNum):
         'content-Type': "application/json",
         'authorization': "Bearer " + auth
     }
-    payload = '{ "trackingInfo": [ { "trackingNumberInfo": { "trackingNumber": "' + tackingNum + '" } } ], "includeDetailedScans": true }'
+
+
+    testTrackingNum = '231300687629630'
+    payload = '{ "trackingInfo": [ { "trackingNumberInfo": { "trackingNumber": "' + testTrackingNum + '" } } ], "includeDetailedScans": true }'
 
     #Post call and save to res
     res = requests.post(url, data=payload, headers=headers).json()
 
     #Disregard unnecessary info
     scanEvent = res['output']['completeTrackResults'][0]['trackResults'][0]['scanEvents']
-    print('Tracking number : ', tackingNum)
     print()
 
     for i in scanEvent :
@@ -59,19 +76,27 @@ def trackPackage(tackingNum):
 
 
 
-trackPackage(input("Please Enter Tracking Number : "))
 
 def createShipment():
-    accountNum = ''
-    pickupType = ''
-    serviceType = ''
-    packageType = ''
-    shipperInfo = ''
-    recipientInfo = ''
-    payerInfo = ''
-    weight = ''
-    labelSpec = ''
 
+    auth = getBearerAuthorizationShipping()
+    headers = {
+        'content-Type': "application/json",
+        'authorization': "Bearer " + auth
+    }
+    url = "https://apis-sandbox.fedex.com/ship/v1/shipments"
+
+    #payload = '{ "requestedShipment": { "shipper": { "address" : "746 S Burlington Ave, APT#123", ""} } }'
+
+    payload = json.dumps(json.load(open('shipment_payload.json')))
+    res = requests.post(url, data=payload, headers=headers).json()
+    print(res)
+    print(res['output'])
+
+    print()
     return None
+
+#trackPackage(input("Please Enter Tracking Number : "))
+trackPackage("")
 
 
